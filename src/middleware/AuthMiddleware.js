@@ -11,7 +11,7 @@ export async function authValidation(req, res, next) {
 
     if (!sessionExists) return res.status(401).send("Você não tem autorização para acessar este recurso!")
 
-    res.locals.sessao = sessionExists
+    res.locals.session = sessionExists
 
     next()
 
