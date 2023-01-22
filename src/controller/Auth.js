@@ -31,12 +31,13 @@ export async function signIn(req, res) {
       return res.status(400).send("Usuário ou senha incorretos");
 
     const token = uuidV4();
-
+    const name = userExists.name;
+    
     await db
       .collection("sessions")
       .insertOne({ userID: userExists._id, token });
 
-    return res.status(200).send(token);
+    return res.status(200).send({token, name});
   } catch (error) {
     res.status(500).send(error.message);
   }

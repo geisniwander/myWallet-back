@@ -14,6 +14,18 @@ export async function getMovements(req, res) {
   }
 }
 
+export async function getMovementById(req, res) {
+  const { id } = req.params
+
+  const movement = await db.collection("movements").findOne({ _id: ObjectId(id) })
+
+  if (!movement) {
+    res.send('Movimentação inválida!')
+  }
+
+  return res.send(movement)
+}
+
 export async function postMovement(req, res) {
   const movement = req.body;
   const checkSession = res.locals.session;
