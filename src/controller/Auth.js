@@ -1,16 +1,24 @@
 import bcrypt from "bcrypt";
 import { v4 as uuidV4 } from "uuid";
 import db from "../config/database.js";
+import { stripHtml } from "string-strip-html";
 
 export async function signUp(req, res) {
   const { name, email, password } = req.body;
-
-  const passwordHashed = bcrypt.hashSync(password, 10);
+  const userSanitized = { name: stripHtml(name).result.trim(), email: stripHtml(email).result.trim(), password: stripHtml(password).result };
+  const passwordHashed = bcrypt.hashSync(userSanitized.password, 10);
 
   try {
+  const userExists = await db
+    .collection("users")
+    .findOne({ email });
+
+  if (userExists)
+    return res.status(409).send("Este email já está em uso!");
+
     await db
       .collection("users")
-      .insertOne({ name, email, password: passwordHashed });
+      .insertOne({ name: userSanitized.name, email: userSanitized.email, password: passwordHashed });
     res.status(201).send("Usuário cadastrado com sucesso!");
   } catch (error) {
     res.status(500).send(error.message);
