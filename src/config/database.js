@@ -1,16 +1,16 @@
-import { MongoClient } from 'mongodb'
-import dotenv from 'dotenv'
+import { MongoClient } from "mongodb";
+import dotenv from "dotenv";
 
-dotenv.config()
+dotenv.config();
 
-const mongoClient = new MongoClient(process.env.DATABASE_URL)
+const mongoClient = new MongoClient(process.env.DATABASE_URL);
 let db;
 
 try {
-  await mongoClient.connect()
-  db = mongoClient.db()
+  await mongoClient.connect();
+  db = mongoClient.db();
 } catch (error) {
-  console.log('Um erro inesperado ocorreu no servidor!')
+  console.log("Um erro inesperado ocorreu no servidor!");
 }
 
-export default db
+export default db;

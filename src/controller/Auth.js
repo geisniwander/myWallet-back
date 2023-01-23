@@ -5,20 +5,25 @@ import { stripHtml } from "string-strip-html";
 
 export async function signUp(req, res) {
   const { name, email, password } = req.body;
-  const userSanitized = { name: stripHtml(name).result.trim(), email: stripHtml(email).result.trim(), password: stripHtml(password).result };
+  const userSanitized = {
+    name: stripHtml(name).result.trim(),
+    email: stripHtml(email).result.trim(),
+    password: stripHtml(password).result,
+  };
   const passwordHashed = bcrypt.hashSync(userSanitized.password, 10);
 
   try {
-  const userExists = await db
-    .collection("users")
-    .findOne({ email });
+    const userExists = await db.collection("users").findOne({ email });
 
-  if (userExists)
-    return res.status(409).send("Este email já está em uso!");
+    if (userExists) return res.status(409).send("Este email já está em uso!");
 
     await db
       .collection("users")
-      .insertOne({ name: userSanitized.name, email: userSanitized.email, password: passwordHashed });
+      .insertOne({
+        name: userSanitized.name,
+        email: userSanitized.email,
+        password: passwordHashed,
+      });
     res.status(201).send("Usuário cadastrado com sucesso!");
   } catch (error) {
     res.status(500).send(error.message);
@@ -40,12 +45,12 @@ export async function signIn(req, res) {
 
     const token = uuidV4();
     const name = userExists.name;
-    
+
     await db
       .collection("sessions")
       .insertOne({ userID: userExists._id, token });
 
-    return res.status(200).send({token, name});
+    return res.status(200).send({ token, name });
   } catch (error) {
     res.status(500).send(error.message);
   }

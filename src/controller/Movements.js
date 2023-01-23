@@ -92,12 +92,9 @@ export async function updateMovement(req, res) {
     if (user.userID.toString() !== movement.userID.toString())
       return res.status(401).send("Não autorizado!");
 
-    const { modifiedCount } = await db
+    await db
       .collection("movements")
       .updateOne({ _id: ObjectId(id) }, { $set: movementSanitized });
-
-    if (modifiedCount === 0)
-      return res.status(404).send("Essa movimentação não existe!");
 
     res.status(200).send("Movimentação atualizada com sucesso!");
   } catch (error) {
