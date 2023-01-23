@@ -11,4 +11,4 @@ server.use(cors());
 
 server.use([authRouter, movementsRouter])
 
-server.listen(5000, () => {console.log("Server is listening on port 5000")})
+server.listen(process.env.PORT, () => {console.log("Server running on port " + process.env.PORT)})
